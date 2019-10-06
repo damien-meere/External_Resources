@@ -13,14 +13,41 @@ function getData(type, cb) {
     xhr.send();
 }
 
-function writeToDocument(type) {
+function getTableHeaders(obj){
+    var tableHeaders = [];
+    Object.keys(obj).forEach(function(key){
+        // <td> creates a new table cell.
+        // Using Backtick here, this is called a template literal, which allows us to interpolate variables and strings like this
+        tableHeaders.push(`<td>${key}</td>`);
+    });
+    // <tr> adds the value to a row
+    return `<tr>${tableHeaders}</tr>`;
+}
 
+function generatePaginationButtons(next, previous){
+    if (next && previous){
+        return `<button onclick="writeToDocumen('${previous}')">Previous</button>
+                <button onclick="writeToDocumen('${next}')">Next</button>`;
+    } else if (next && !previous){
+        return `<button onclick="writeToDocumen('${next}')">Next</button>`;
+    } else if (previous && !next){
+        return `<button onclick="writeToDocumen('${previous}')">Previous</button>`;
+    }
+}
+
+function writeToDocument(type) {
+    var tableRows = [];
     // This clears the HTML data element each time a button is clicked
     var el = document.getElementById("data");
     el.innerHTML = "";
 
     getData(type, function(data) {
-        var tableRows = [];
+        // to this point we only see 10 rows of data, in order to see the rest we implement pagination function
+        var pagination;
+        if(data.next || data.previous){
+            pagination = generatePaginationButtons(data.next, data.previous);
+        }
+
         data = data.results;
         var tableHeaders = getTableHeaders(data[0]);
 
@@ -36,17 +63,7 @@ function writeToDocument(type) {
             });
             tableRows.push(`<tr>${dataRow}</tr>`);
         });
-        el.innerHTML = `<table>${tableRows}</table>`
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`
     });
 }
 
-function getTableHeaders(obj){
-    var tableHeaders = [];
-    Object.keys(obj).forEach(function(key){
-        // <td> creates a new table cell.
-        // Using Backtick here, this is called a template literal, which allows us to interpolate variables and strings like this
-        tableHeaders.push(`<td>${key}</td>`);
-    });
-    // <tr> adds the value to a row
-    return `<tr>${tableHeaders}</tr>`;
-}
