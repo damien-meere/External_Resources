@@ -61,7 +61,9 @@ function writeToDocument(url) {
             });
             tableRows.push(`<tr>${dataRow}</tr>`);
         });
-        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`
+        //el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`;
+        //We have a display bug in that there are commas present at the top of the window. To remove these we use the replace method. /g means find all, then replace with empty string
+        el.innerHTML = `<table>${tableHeaders}${tableRows}</table>${pagination}`.replace(/,/g, "");
     });
 }
 
