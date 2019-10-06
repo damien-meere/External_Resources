@@ -14,23 +14,29 @@ function getData(type, cb) {
 }
 
 function writeToDocument(type) {
-    var tableRows = [];
+
     // This clears the HTML data element each time a button is clicked
     var el = document.getElementById("data");
     el.innerHTML = "";
 
     getData(type, function(data) {
+        var tableRows = [];
         data = data.results;
         var tableHeaders = getTableHeaders(data[0]);
 
         data.forEach(function(item){
             var dataRow = [];
+
             Object.keys(item).forEach(function(key){
-                dataRow.push(`<td>{$item[key]}</td>`);
+                // to tidy things up a little, we just show the truncated data to limit the space taken up on screen
+                var rowData = item[key].toString();
+                var truncatedData = rowData.substring(0, 15);
+
+                dataRow.push(`<td>${truncatedData}</td>`);
             });
-            tableRows.push(dataRow);
+            tableRows.push(`<tr>${dataRow}</tr>`);
         });
-        el.innerHTML = `<table${tableHeaders}${tableRows}</table>`
+        el.innerHTML = `<table>${tableRows}</table>`
     });
 }
 
