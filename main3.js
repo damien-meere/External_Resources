@@ -1,6 +1,4 @@
-const baseURL = "https://swapi.co/api/";
-
-function getData(type, cb) {
+function getData(url, cb) {
     var xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function() {
@@ -9,7 +7,7 @@ function getData(type, cb) {
         }
     };
 
-    xhr.open("GET", baseURL + type + "/");
+    xhr.open("GET", url);
     xhr.send();
 }
 
@@ -26,22 +24,22 @@ function getTableHeaders(obj){
 
 function generatePaginationButtons(next, previous){
     if (next && previous){
-        return `<button onclick="writeToDocumen('${previous}')">Previous</button>
-                <button onclick="writeToDocumen('${next}')">Next</button>`;
+        return `<button onclick="writeToDocument('${previous}')">Previous</button>
+                <button onclick="writeToDocument('${next}')">Next</button>`;
     } else if (next && !previous){
-        return `<button onclick="writeToDocumen('${next}')">Next</button>`;
+        return `<button onclick="writeToDocument('${next}')">Next</button>`;
     } else if (previous && !next){
-        return `<button onclick="writeToDocumen('${previous}')">Previous</button>`;
+        return `<button onclick="writeToDocument('${previous}')">Previous</button>`;
     }
 }
 
-function writeToDocument(type) {
+function writeToDocument(url) {
     var tableRows = [];
     // This clears the HTML data element each time a button is clicked
     var el = document.getElementById("data");
     el.innerHTML = "";
 
-    getData(type, function(data) {
+    getData(url, function(data) {
         // to this point we only see 10 rows of data, in order to see the rest we implement pagination function
         var pagination;
         if(data.next || data.previous){
